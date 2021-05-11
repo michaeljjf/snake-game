@@ -14,6 +14,7 @@ public class StartGame {
         int height = dimension.height;
         int jFrameWidth = 800;
         int jFrameHeight = 800;
+        // 居中显示
         int x = (width - jFrameWidth) / 2;
         int y = (height - jFrameHeight) / 2;
         jFrame.setBounds(x, y, jFrameWidth, jFrameHeight);
@@ -21,6 +22,11 @@ public class StartGame {
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // 设置窗体大小不可调
         jFrame.setResizable(false);
+
+        // 添加一个画板
+        GamePanel gamePanel = new GamePanel();
+        jFrame.add(gamePanel);
+
         // 默认窗体隐藏，需要将窗体显示出来
         jFrame.setVisible(true);
     }
