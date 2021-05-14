@@ -26,6 +26,12 @@ public class GamePanel extends JPanel {
     int foodY;
     // 积分
     int score;
+    // 小蛇是否死亡的判断，默认活着
+    boolean isDie = false;
+
+    /**
+     * 初始化动作
+     */
     public void init() {
         // 初始化蛇的长度
         length = 3;
@@ -80,7 +86,12 @@ public class GamePanel extends JPanel {
                 super.keyPressed(e);
                 int keyCode = e.getKeyCode();
                 if (keyCode == KeyEvent.VK_SPACE) {// 按下了空格
-                    isStart = !isStart;
+                    if (isDie) {
+                        isDie = false;
+                        init();
+                    } else {
+                        isStart = !isStart;
+                    }
                     repaint();// 重新绘制
                 }
                 if (keyCode == KeyEvent.VK_UP) {// 向上
@@ -104,7 +115,7 @@ public class GamePanel extends JPanel {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isStart) {//游戏开始时蛇才动
+                if (isStart && !isDie) {//游戏开始时并且活着，蛇才动
                     // 后一节身子走到前一节身子的位置上
                     for (int i = length - 1; i > 0; i--) {
                         snakeX[i] = snakeX[i - 1];
@@ -153,6 +164,14 @@ public class GamePanel extends JPanel {
                         score += 10;
                     }
 
+                    // 判断是否死亡
+                    for (int i = 1; i < length; i++) {
+                        if (snakeX[0] == snakeX[i] && snakeY[0] == snakeY[i]) {
+                            isDie = true;
+                            break;
+                        }
+                    }
+
                     // 重绘
                     repaint();
                 }
@@ -196,8 +215,16 @@ public class GamePanel extends JPanel {
             g.drawString("点击空格开始游戏", 250, 330);
         }
 
+        // 画积分
         g.setColor(Color.white);
         g.setFont(new Font("微软雅黑", Font.BOLD, 20));
         g.drawString("积分：" + score, 640, 40);
+
+        // 画入死亡状态
+        if (isDie) {
+            g.setColor(new Color(204, 2, 255));
+            g.setFont(new Font("微软雅黑", Font.BOLD, 20));
+            g.drawString("小蛇死亡，点击空格重新开始游戏", 250, 330);
+        }
     }
 }
