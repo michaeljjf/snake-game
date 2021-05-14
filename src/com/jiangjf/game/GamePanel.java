@@ -24,6 +24,8 @@ public class GamePanel extends JPanel {
     // 食物的位置
     int foodX;
     int foodY;
+    // 积分
+    int score;
     public void init() {
         // 初始化蛇的长度
         length = 3;
@@ -43,6 +45,9 @@ public class GamePanel extends JPanel {
         // 初始化食物的位置
         foodX = 375;
         foodY = 475;
+
+        // 初始化积分
+        score = 0;
     }
 
     /**
@@ -92,7 +97,7 @@ public class GamePanel extends JPanel {
                 }
             }
         });
-        timer = new Timer(100, new ActionListener() {
+        timer = new Timer(130, new ActionListener() {
             /**
              * 事件监听，每100ms监听是否发生了一个动作
              * @param e
@@ -138,11 +143,14 @@ public class GamePanel extends JPanel {
 
                         /*
                          随机下一个食物的位置
-                         x[25,750]：转换：/25 -> [1,30] -> -1 -> [0,29]
-                         y[100,725] 转换：/25 -> [4,29] -> -4 -> [0,25]
+                         x[25,750]：转换：除以25 -> [1,30] -> -1 -> [0,29]
+                         y[100,725] 转换：除以25 -> [4,29] -> -4 -> [0,25]
                          */
                         foodX = (new Random().nextInt(30) + 1) * 25;
                         foodY = (new Random().nextInt(26) + 4) * 25;
+
+                        // 每吃一个食物，积分加10
+                        score += 10;
                     }
 
                     // 重绘
@@ -187,5 +195,9 @@ public class GamePanel extends JPanel {
             g.setFont(new Font("微软雅黑", Font.BOLD, 40));
             g.drawString("点击空格开始游戏", 250, 330);
         }
+
+        g.setColor(Color.white);
+        g.setFont(new Font("微软雅黑", Font.BOLD, 20));
+        g.drawString("积分：" + score, 640, 40);
     }
 }
