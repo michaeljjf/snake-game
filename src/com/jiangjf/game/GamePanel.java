@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 public class GamePanel extends JPanel {
     // 蛇的长度
@@ -20,6 +21,9 @@ public class GamePanel extends JPanel {
     boolean isStart = false;
     // 定时器，移动小蛇用
     Timer timer;
+    // 食物的位置
+    int foodX;
+    int foodY;
     public void init() {
         // 初始化蛇的长度
         length = 3;
@@ -35,10 +39,15 @@ public class GamePanel extends JPanel {
 
         // 初始化蛇头的方向 L R U D
         direction = "R";
+
+        // 初始化食物的位置
+        foodX = 375;
+        foodY = 475;
     }
 
     /**
      * 获取蛇头方向的图片对象
+     *
      * @return
      */
     public ImageIcon getDirectionImg() {
@@ -69,6 +78,18 @@ public class GamePanel extends JPanel {
                     isStart = !isStart;
                     repaint();// 重新绘制
                 }
+                if (keyCode == KeyEvent.VK_UP) {// 向上
+                    direction = "U";
+                }
+                if (keyCode == KeyEvent.VK_DOWN) {// 向下
+                    direction = "D";
+                }
+                if (keyCode == KeyEvent.VK_LEFT) {// 向左
+                    direction = "L";
+                }
+                if (keyCode == KeyEvent.VK_RIGHT) {// 向右
+                    direction = "R";
+                }
             }
         });
         timer = new Timer(100, new ActionListener() {
@@ -85,11 +106,45 @@ public class GamePanel extends JPanel {
                         snakeY[i] = snakeY[i - 1];
                     }
                     // 动头
-                    snakeX[0] += 25;
+                    if ("R".equals(direction)) {
+                        snakeX[0] += 25;
+                    }
+                    if ("L".equals(direction)) {
+                        snakeX[0] -= 25;
+                    }
+                    if ("U".equals(direction)) {
+                        snakeY[0] -= 25;
+                    }
+                    if ("D".equals(direction)) {
+                        snakeY[0] += 25;
+                    }
                     // 防止蛇超出边界
                     if (snakeX[0] > 750) {
                         snakeX[0] = 25;
                     }
+                    if (snakeX[0] < 25) {
+                        snakeX[0] = 750;
+                    }
+                    if (snakeY[0] > 725) {
+                        snakeY[0] = 100;
+                    }
+                    if (snakeY[0] < 100) {
+                        snakeY[0] = 725;
+                    }
+
+                    // 吃到食物
+                    if (snakeX[0] == foodX && snakeY[0] == foodY) {
+                        length++;
+
+                        /*
+                         随机下一个食物的位置
+                         x[25,750]：转换：/25 -> [1,30] -> -1 -> [0,29]
+                         y[100,725] 转换：/25 -> [4,29] -> -4 -> [0,25]
+                         */
+                        foodX = (new Random().nextInt(30) + 1) * 25;
+                        foodY = (new Random().nextInt(26) + 4) * 25;
+                    }
+
                     // 重绘
                     repaint();
                 }
@@ -101,6 +156,7 @@ public class GamePanel extends JPanel {
 
     /**
      * 图形版的main方法
+     *
      * @param g
      */
     @Override
@@ -111,7 +167,7 @@ public class GamePanel extends JPanel {
         // 画一个图片 四个参数：this指代当前面板 g画笔 xy是画图片的坐标
         Images.headerImg.paintIcon(this, g, 10, 10);
         // 调整画笔颜色
-        g.setColor(new Color(190, 179, 201));
+        g.setColor(new Color(26, 73, 66, 255));
         // 画一个游戏区域的矩形
         g.fillRect(10, 70, 770, 685);
 
@@ -122,8 +178,11 @@ public class GamePanel extends JPanel {
             Images.bodyImg.paintIcon(this, g, snakeX[i], snakeY[i]);
         }
 
+        // 画食物
+        Images.foodImg.paintIcon(this, g, foodX, foodY);
+
         // 暂停时画提示语
-        if (isStart == false) {
+        if (!isStart) {
             g.setColor(new Color(204, 2, 255));
             g.setFont(new Font("微软雅黑", Font.BOLD, 40));
             g.drawString("点击空格开始游戏", 250, 330);
