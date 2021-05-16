@@ -192,11 +192,11 @@ public class GamePanel extends JPanel {
         // 设置面板的背景色
         this.setBackground(new Color(174, 207, 174));
         // 画一个图片 四个参数：this指代当前面板 g画笔 xy是画图片的坐标
-        Images.headerImg.paintIcon(this, g, 10, 10);
+        Images.headerImg.paintIcon(this, g, 8, 10);
         // 调整画笔颜色
         g.setColor(new Color(26, 73, 66, 255));
         // 画一个游戏区域的矩形
-        g.fillRect(10, 70, 770, 685);
+        g.fillRect(8, 70, 770, 685);
 
         // 画蛇头
         getDirectionImg().paintIcon(this, g, snakeX[0], snakeY[0]);
